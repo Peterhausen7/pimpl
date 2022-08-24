@@ -10,22 +10,22 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Entity class for "Gast"
+ * @author Christoph / inf103518
+ *
+ */
 @Entity
 public class Guest {
 	
 	private Integer id;
-	
 	private String surname;
-	
 	private String prename;
-	
 	private Date birthDate;
-	
 	private Date checkedIn;
-	
 	private Date checkedOut;
 	
-	
+	//* Foreign keys *//
 	private Booking booking;
 	
 	public Guest() {

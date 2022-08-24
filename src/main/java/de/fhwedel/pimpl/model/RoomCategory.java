@@ -10,24 +10,22 @@ import javax.persistence.Id;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Entity class for "Zimmerkategorie"
+ * @author Christoph / inf103518
+ *
+ */
 @Entity
 public class RoomCategory {
 	
 	private Integer id;
-	
 	private String description;
-	
 	private Integer bedCount;
-	
 	private Integer pricePerNight;
-	
 	private Integer minPrice;
-	
-	
 	
 	public RoomCategory() {
 	}
-	
 	
 	public RoomCategory(String description, Integer bedCount, Integer pricePerNight, Integer minPrice) {
 		super();

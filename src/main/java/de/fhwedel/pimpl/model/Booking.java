@@ -13,39 +13,34 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Entity class for "Buchung"
+ * @author Christoph / inf103518
+ */
 @Entity
 public class Booking {
 	
+	/**
+	 * Enum for the status attribute
+	 */
 	public enum ContractState {
 		RESERVED, CHECKED_IN, CHECKED_OUT, FINISHED, CANCELED_PENDING, CANCELED 
 	}
-	
+
 	private Integer id;
-	
 	private String bookingNr;
-	
 	private Date reservation;
-	
 	private ContractState status;
-	
 	private String comment;
-	
 	private Date estimatedArrival;
-	
 	private Date arrived;
-	
 	private Date estimatedDeparture;
-	
 	private Date departed; 
-	
 	private Integer price;
-	
 	private String licensePlate;
 	
-	//* Foreign Keys*//
-	
+	//* Foreign Keys *//
 	private Customer customer;
-	
 	private Room room;
 	
 	

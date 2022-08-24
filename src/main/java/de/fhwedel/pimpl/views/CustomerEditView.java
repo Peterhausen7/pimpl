@@ -163,8 +163,8 @@ public class CustomerEditView extends Composite<Component> {
 		cust.ifPresent(c -> {
 			Dialog d = new Dialog();
 			d.setCloseOnEsc(true);
-			d.add(new Label("Kunde wirklich löschen?"));
-			d.add(new HorizontalLayout(new Button("Ja, wirklich", ev -> {
+			d.add(new Label("Kunde löschen?"));
+			d.add(new HorizontalLayout(new Button("Ja", ev -> {
 				d.close();
 				cust_repo.delete(c);
 				setCustomer(Optional.empty());

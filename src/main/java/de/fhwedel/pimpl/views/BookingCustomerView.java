@@ -20,6 +20,7 @@ import de.fhwedel.pimpl.model.Customer;
 @UIScope
 public class BookingCustomerView extends Composite<Component> {
 	
+	//Fields of customer class
 	private TextField cnr = new TextField("Kundennummer");
 	private TextField surname = new TextField("Name");
 	private TextField prename = new TextField("Vorname");
@@ -28,17 +29,20 @@ public class BookingCustomerView extends Composite<Component> {
 	private TextField city = new TextField("Ort");
 	private IntegerField discount = new IntegerField("Rabatt");
 	
+	//The main view of this class - costumer information
 	private FormLayout view = new FormLayout();
 	
+	//The customers information to display
 	private Optional<Customer> cust = Optional.empty();
 	
+	//Binder for customer class
 	private Binder<Customer> binder = new BeanValidationBinder<>(Customer.class);
 	
 	@Override
 	protected Component initContent() {
-		this.view.add(cnr, discount, surname, prename, address, zip, city);
-		this.view.setResponsiveSteps(new ResponsiveStep("0", 2));
-		//this.view.setSizeUndefined();
+		view.add(cnr, discount, surname, prename, address, zip, city);
+		view.setResponsiveSteps(new ResponsiveStep("0", 2));
+		
 		cnr.setReadOnly(true);
 		discount.setReadOnly(true);
 		surname.setReadOnly(true);
@@ -47,18 +51,17 @@ public class BookingCustomerView extends Composite<Component> {
 		zip.setReadOnly(true);
 		city.setReadOnly(true);
 		
-		this.binder.bindInstanceFields(this);
+		binder.bindInstanceFields(this);
 		
-		return this.view;
+		return view;
 	}
 	
 	private void refresh() {
 		binder.readBean(cust.orElse(null));
 	}
 	
-	public void setCustomer(Optional<Customer> cust) {
+	void setCustomer(Optional<Customer> cust) {
 		this.cust = cust;
 		refresh();
 	}
-
 }

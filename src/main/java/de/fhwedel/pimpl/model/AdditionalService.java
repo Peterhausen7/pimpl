@@ -8,15 +8,18 @@ import javax.persistence.Id;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+
+/**
+ * Entity class for "Zusatzleistung"
+ * @author Christoph / inf103518
+ *
+ */
 @Entity
 public class AdditionalService {
 	
 	private Integer id;
-	
 	private String descrption;
-	
-	private Integer price;
-	
+	private Integer price;	
 	private Integer turnoverTax;
 	
 	public AdditionalService() {

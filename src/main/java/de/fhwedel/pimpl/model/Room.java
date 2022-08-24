@@ -10,15 +10,18 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Entity class for "Zimmer"
+ * @author Christoph / inf103518
+ *
+ */
 @Entity
 public class Room {
 
 	private Integer id;
-	
 	private String roomNumber;
 	
-	
-	
+	//* Foreign keys *//
 	private RoomCategory roomCategory;
 	
 	public static Room createExampleRooms(String roomNum) {

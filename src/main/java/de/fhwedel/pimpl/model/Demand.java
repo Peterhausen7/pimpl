@@ -11,23 +11,22 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Entity class for "Inanspruchname"
+ * @author Christoph / inf103518
+ *
+ */
 @Entity
 public class Demand {
 
 	private Integer id;
-	
 	private Integer count;
-	
 	private Integer price;
-	
 	private Integer turnoverTax;
-	
 	private Date date;
 	
-	
-	
+	//* Foreign keys *//
 	private Booking booking;
-	
 	private AdditionalService additionalService;
 	
 	public Demand() {

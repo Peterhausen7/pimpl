@@ -16,6 +16,11 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * Entity class for "Kunde"
+ * @author Christoph / inf103518
+ *
+ */
 @Entity
 public class Customer {
 
@@ -40,25 +45,17 @@ public class Customer {
 	}
 	
 	private Integer id;
-
 	private String surname;
-
 	private String prename;
-	
 	private String address;
-	
 	private String zip;
-	
 	private String city;
-	
 	private Integer discount;
-	
-	private Set<Booking> bookings;
-
-	private Set<Address> addresses;
-	
-	
 	private String cnr;
+	
+	//* Foreign keys *//
+	private Set<Booking> bookings;
+	private Set<Address> addresses;
 
 	public Customer() {
 		this.addresses = new HashSet<>();
@@ -82,7 +79,6 @@ public class Customer {
 	public Integer getId() {
 		return id;
 	}
-	
 	
 	public void setId(Integer id) {
 		this.id = id;
