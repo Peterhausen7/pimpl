@@ -1,4 +1,4 @@
-package de.fhwedel.pimpl;
+package de.fhwedel.pimpl.views;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,12 +21,12 @@ import com.vaadin.flow.data.selection.SelectionEvent;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
-import de.fhwedel.pimpl.CustomerSearchView.CustomerSearchHelper;
 import de.fhwedel.pimpl.model.Address;
 import de.fhwedel.pimpl.model.Booking;
 import de.fhwedel.pimpl.model.Customer;
 import de.fhwedel.pimpl.repos.BookingRepo;
 import de.fhwedel.pimpl.repos.CustomerRepo;
+import de.fhwedel.pimpl.views.CustomerSearchView.CustomerSearchHelper;
 
 @SuppressWarnings("serial")
 @SpringComponent

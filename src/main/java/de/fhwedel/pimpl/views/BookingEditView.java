@@ -1,5 +1,6 @@
-package de.fhwedel.pimpl;
+package de.fhwedel.pimpl.views;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import com.vaadin.flow.component.Component;
@@ -22,6 +23,7 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import de.fhwedel.pimpl.model.Customer;
 import de.fhwedel.pimpl.repos.BookingRepo;
 import de.fhwedel.pimpl.repos.CustomerRepo;
+import de.fhwedel.pimpl.DateValidationAndFilterHelper;
 import de.fhwedel.pimpl.model.Booking;
 import de.fhwedel.pimpl.model.Booking.ContractState;
 
@@ -53,6 +55,9 @@ public class BookingEditView extends Composite<Component> {
 	private Optional<Booking> booking = Optional.empty();
 	private Optional<Customer> cust = Optional.empty();
 	
+	private boolean supervisor = false;
+	private LocalDate globalDate = LocalDate.now();
+	
 	private BookingRepo bookingRepo;
 	private CustomerRepo custRepo;
 	
@@ -65,46 +70,45 @@ public class BookingEditView extends Composite<Component> {
 	
 	@Override
 	protected Component initContent() {
-		this.status.setItems(ContractState.values());
-		this.status.setLabel("Status");
+		status.setItems(ContractState.values());
+		status.setLabel("Status");
 		
-//		this.bookingForm.addFormItem(bookingNr, "Buchungsnummer");
-//		this.bookingForm.addFormItem(reservation, "Reservierungsdatum");
-//		this.bookingForm.addFormItem(status, "Status");
-//		this.bookingForm.addFormItem(comment, "Kommentar");
-//		this.bookingForm.addFormItem(estimatedArrival, "Anreise Soll");
-//		this.bookingForm.addFormItem(arrived, "Anreise Ist");
-//		this.bookingForm.addFormItem(estimatedDeparture, "Abreise Soll");
-//		this.bookingForm.addFormItem(departed, "Abreise Ist");
-//		this.bookingForm.addFormItem(price, "Zimmerpreis");
-//		this.bookingForm.addFormItem(licensePlate, "Kfz-Kennzeichen");
-		this.bookingForm.add(bookingNr, reservation, status, comment, estimatedArrival, arrived,
+		bookingForm.add(bookingNr, reservation, status, comment, estimatedArrival, arrived,
 				estimatedDeparture, departed, price, licensePlate);
 		
+		bookingForm.setResponsiveSteps(new ResponsiveStep("0", 2));
+		
+		bookingNr.setEnabled(false);
+		reservation.setEnabled(false);
+		status.setEnabled(false);
+		comment.setEnabled(false);
+		estimatedArrival.setEnabled(false);
+		arrived.setEnabled(false);
+		estimatedDeparture.setEnabled(false);
+		departed.setEnabled(false);
+		price.setEnabled(false);
+		licensePlate.setEnabled(false);
 		
 		
-		this.bookingForm.setResponsiveSteps(new ResponsiveStep("0", 2));
 		
-		buttons.setEnabled(booking.isPresent());
-		//bookingForm.setEnabled(booking.isPresent());
+		
+		
+		buttons.setEnabled(false);
+	
+		binder.forField(reservation).withConverter(
+				new LocalDateToDateConverter()).bind(Booking::getReservation, Booking::setReservation);
+		binder.forField(estimatedArrival).withConverter(
+				new LocalDateToDateConverter()).bind(Booking::getEstimatedArrival, Booking::setEstimatedArrival);
+		binder.forField(arrived).withConverter(
+				new LocalDateToDateConverter()).bind(Booking::getArrived, Booking::setArrived);
+		binder.forField(estimatedDeparture).withConverter(
+				new LocalDateToDateConverter()).bind(Booking::getEstimatedDeparture, Booking::setEstimatedDeparture);
+		binder.forField(departed).withConverter(
+				new LocalDateToDateConverter()).bind(Booking::getDeparted, Booking::setDeparted);
+		binder.bindInstanceFields(this);
 		
 		
 		view.add(bookingForm, buttons);
-		
-		
-		this.binder.forField(reservation).withConverter(
-				new LocalDateToDateConverter()).bind(Booking::getReservation, Booking::setReservation);
-		this.binder.forField(estimatedArrival).withConverter(
-				new LocalDateToDateConverter()).bind(Booking::getEstimatedArrival, Booking::setEstimatedArrival);
-		this.binder.forField(arrived).withConverter(
-				new LocalDateToDateConverter()).bind(Booking::getArrived, Booking::setArrived);
-		this.binder.forField(estimatedDeparture).withConverter(
-				new LocalDateToDateConverter()).bind(Booking::getEstimatedDeparture, Booking::setEstimatedDeparture);
-		this.binder.forField(departed).withConverter(
-				new LocalDateToDateConverter()).bind(Booking::getDeparted, Booking::setDeparted);
-		
-		this.binder.bindInstanceFields(this);
-		
 		return view;
 		
 	}
@@ -117,6 +121,40 @@ public class BookingEditView extends Composite<Component> {
 		binder.readBean(booking.orElse(null));
 		//bookingForm.setEnabled(booking.isPresent());
 		buttons.setEnabled(booking.isPresent());
+		reservation.setEnabled(supervisor && booking.isPresent());
+		status.setEnabled(supervisor && booking.isPresent());
+		comment.setEnabled(booking.isPresent() 
+				&& (supervisor 
+						|| DateValidationAndFilterHelper.checkStatusHierarchy(booking.get().getStatus(), ContractState.CHECKED_IN)));
+		estimatedArrival.setEnabled(booking.isPresent() 
+				&& (supervisor 
+						|| DateValidationAndFilterHelper.checkStatusHierarchy(booking.get().getStatus(), ContractState.RESERVED))) ;
+//								&& DateValidationAndFilterHelper.validateBookingTimeframe(booking.get().getEstimatedArrival(), 
+//										booking.get().getEstimatedArrival(), supervisor, globalDate))));
+		arrived.setEnabled(booking.isPresent() && supervisor);
+		estimatedDeparture.setEnabled(booking.isPresent() 
+				&& (supervisor 
+						|| DateValidationAndFilterHelper.checkStatusHierarchy(booking.get().getStatus(), ContractState.CHECKED_IN)));
+		departed.setEnabled(booking.isPresent() && supervisor);
+		price.setEnabled(booking.isPresent() 
+				&& (supervisor 
+						|| DateValidationAndFilterHelper.checkStatusHierarchy(booking.get().getStatus(), ContractState.RESERVED)));
+		licensePlate.setEnabled(booking.isPresent() 
+				&& (supervisor 
+						|| DateValidationAndFilterHelper.checkStatusHierarchy(booking.get().getStatus(), ContractState.CHECKED_IN)));
+		
+	}
+	
+	
+	
+	void setSupervisor(boolean supervisor) {
+		this.supervisor = supervisor;
+		refresh();
+	}
+	
+	void setGlobalDate(LocalDate globalDate) {
+		this.globalDate = globalDate;
+		refresh();
 	}
 	
 	public Optional<Booking> getBooking() {
@@ -136,28 +174,24 @@ public class BookingEditView extends Composite<Component> {
 //		
 //	}
 	
+	void saveBooking() {
+		btnEditBooking.click();
+	}
+	
 	private void onBookingSafeClick(com.vaadin.flow.component.ClickEvent<Button> event) {
-//		booking.ifPresent(b -> {
-//			cust.ifPresent(c -> {
-//				
-//			});
-//			if (binder.writeBeanIfValid(b)) {
-//				Booking booking = bookingRepo.save(b);
-//				
-//				
-//				setBooking(Optional.of(booking));
-//				
-//			}
-//		});
-		
+		System.out.println("buchung vorhanden " + booking.isPresent() 
+		+ "kunde vorhanden " + cust.isPresent());
 		booking.ifPresent(b -> {
 			cust.ifPresent(c -> {
 				if (binder.writeBeanIfValid(b)) {
-					c.addBooking(b);
-					cust = Optional.of(custRepo.save(c));
-				//	booking = Optional.of(bookingRepo.save(b));
+					booking = Optional.of(bookingRepo.save(b));
+					if (b.getCustomer() == null) {
+						c.addBooking(b);
+						cust = Optional.of(custRepo.save(c));
+					}
 					
-					refresh();
+					
+					//refresh();
 					listener.ifPresent(Runnable::run);
 				}
 			});

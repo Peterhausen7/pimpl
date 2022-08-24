@@ -1,4 +1,4 @@
-package de.fhwedel.pimpl;
+package de.fhwedel.pimpl.views;
 
 import java.util.Optional;
 
@@ -25,13 +25,12 @@ import de.fhwedel.pimpl.repos.RoomRepo;
 @UIScope
 public class BookingRoomView extends Composite<Component> {
 
-	private ListBox<Room> rooms = new ListBox<>();
-	
+	private TextField roomName = new TextField("Raum");
 	private TextField description = new TextField("Bezeichnung");
 	private IntegerField bedCount = new IntegerField("Bettanzahl");
 	private IntegerField pricePerNight = new IntegerField("Uebernachtungspreis");
 	private IntegerField minPrice = new IntegerField("Mindestpreis");
-	private FormLayout roomCatForm = new FormLayout(description, bedCount, pricePerNight, minPrice);
+	private FormLayout roomCatForm = new FormLayout(roomName, description, bedCount, pricePerNight, minPrice);
 	
 	
 	private VerticalLayout view = new VerticalLayout();
@@ -52,18 +51,12 @@ public class BookingRoomView extends Composite<Component> {
 	
 	@Override
 	protected Component initContent() {
-		rooms.setItems(new ListDataProvider<Room>(roomRepo.findAll())); 
-		rooms.setItemLabelGenerator(Room::getRoomNumber);
-		rooms.setHeight("150px");
-		rooms.addValueChangeListener(this::onRoomSelect);
-		
 		description.setReadOnly(true);
 		bedCount.setReadOnly(true);
 		pricePerNight.setReadOnly(true);
 		minPrice.setReadOnly(true);
+		roomName.setReadOnly(true);
 		
-		
-		view.add(rooms);
 		view.add(roomCatForm);
 		
 		binder.bindInstanceFields(this);
@@ -80,6 +73,7 @@ public class BookingRoomView extends Composite<Component> {
 		Optional<RoomCategory> roomCat = Optional.empty();
 		if (room.isPresent()) {
 			roomCat = Optional.of(room.get().getRoomCategory());
+			roomName.setValue(room.get().getRoomNumber());
 		}
 		 
 		binder.readBean(roomCat.orElse(null));

@@ -1,5 +1,7 @@
 package de.fhwedel.pimpl.model;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -87,6 +89,27 @@ public class RoomCategory {
 
 	public void setMinPrice(Integer minPrice) {
 		this.minPrice = minPrice;
+	}
+
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(bedCount, description, id, minPrice, pricePerNight);
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RoomCategory other = (RoomCategory) obj;
+		return Objects.equals(bedCount, other.bedCount) && Objects.equals(description, other.description)
+				&& Objects.equals(id, other.id) && Objects.equals(minPrice, other.minPrice)
+				&& Objects.equals(pricePerNight, other.pricePerNight);
 	}
 	
 	

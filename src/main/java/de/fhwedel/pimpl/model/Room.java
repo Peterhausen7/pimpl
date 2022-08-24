@@ -1,5 +1,7 @@
 package de.fhwedel.pimpl.model;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -61,6 +63,26 @@ public class Room {
 	public void setRoomCategory(RoomCategory roomCategory) {
 		this.roomCategory = roomCategory;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, roomCategory, roomNumber);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Room other = (Room) obj;
+		return Objects.equals(id, other.id) && Objects.equals(roomCategory, other.roomCategory)
+				&& Objects.equals(roomNumber, other.roomNumber);
+	}
+	
+	
 	
 	
 	

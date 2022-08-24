@@ -2,8 +2,10 @@ package de.fhwedel.pimpl;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Date;
 
 import de.fhwedel.pimpl.model.Booking;
+import de.fhwedel.pimpl.model.Booking.ContractState;
 
 public class DateValidationAndFilterHelper {
 
@@ -25,6 +27,20 @@ public class DateValidationAndFilterHelper {
 		}
 		
 		return result;
+	}
+	
+	public static boolean isBetweenIncluding(Date start, Date end, Date x) {
+		LocalDate startL = start.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate endL = end.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate xL = x.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		
+		return (startL.isBefore(xL) || startL.isEqual(xL)) && (endL.isAfter(xL) || endL.isEqual(xL));
+	}
+	
+	public static boolean validateBookingTimeframe(Date arrival, Date departure, boolean supervisor, LocalDate currDate) {
+		
+		return DateValidationAndFilterHelper.validateBookingTimeframe(arrival.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), 
+				departure.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), supervisor, currDate);
 	}
 	
 	public static boolean filterRoomAvailability(Booking booking, LocalDate plannedArrival, LocalDate plannedDeparture) {
@@ -50,6 +66,37 @@ public class DateValidationAndFilterHelper {
 					(bArrival.isAfter(plannedDeparture) || bArrival.isEqual(plannedDeparture));
 		}
 		
+		return result;
+	}
+	
+	public static int calcPrice(int pricePerNight, int discount, int minPrice) {
+		return Math.max(pricePerNight * (1 - (discount / 100)), minPrice);
+	}
+	
+	/**
+	 * Checks if the passed status is equal or lower in "hierarchy" then the passed statusTarget
+	 * The hierarchy is reserved < checked in < checked out < canceled_pending < finished == canceled
+	 * @param status the status to check
+	 * @param statusTarget the target to compare to
+	 * @return true if status is lower or equal to statusTarget in "hierarchy"
+	 */
+	public static boolean checkStatusHierarchy(ContractState status, ContractState statusTarget) {
+		boolean result = false;
+		switch(statusTarget) {
+		case FINISHED:
+		case CANCELED:
+			result = true;	
+			break;
+		case CANCELED_PENDING: 
+			result = status.equals(ContractState.CANCELED_PENDING);
+		case CHECKED_OUT:
+			result = result || status.equals(ContractState.CHECKED_OUT);
+		case CHECKED_IN:
+			result = result || status.equals(ContractState.CHECKED_IN);
+		case RESERVED:
+			result = result || status.equals(ContractState.RESERVED);
+			break;
+		}
 		return result;
 	}
 	

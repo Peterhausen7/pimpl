@@ -161,7 +161,7 @@ public class Customer {
 	}
 	
 	@NotNull
-	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "customer", orphanRemoval = true, cascade = CascadeType.ALL)
 	public Set<Booking> getBookings() {
 		return bookings;
 	}
@@ -171,11 +171,13 @@ public class Customer {
 	}
 	
 	public void addBooking(Booking booking) {
+		booking.setCustomer(this);
 		bookings.add(booking);
 	}
 	
 	public void removeBooking(Booking booking) {
 		bookings.remove(booking);
+		booking.setCustomer(null);
 	}
 	
 	@NotNull

@@ -1,5 +1,7 @@
 package de.fhwedel.pimpl.model;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -42,7 +44,7 @@ public class Booking {
 	
 	//* Foreign Keys*//
 	
-	//private Customer customer;
+	private Customer customer;
 	
 	private Room room;
 	
@@ -63,6 +65,12 @@ public class Booking {
 		this.departed = departed;
 		this.price = price;
 		this.licensePlate = licensePlate;
+	}
+	
+	public String toLabel() {
+		LocalDate arrival = estimatedArrival.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate departure = estimatedDeparture.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		return "Buchung " + bookingNr + " Ankunft " + arrival + " Abfahrt " + departure;
 	}
 
 	@Id
@@ -174,15 +182,14 @@ public class Booking {
 		this.licensePlate = licensePlate;
 	}
 
-//	@NotNull
-//	@ManyToOne
-//	public Customer getCustomer() {
-//		return customer;
-//	}
-//
-//	public void setCustomer(Customer customer) {
-//		this.customer = customer;
-//	}
+	@ManyToOne
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
 
 	@NotNull
 	@ManyToOne

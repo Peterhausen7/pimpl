@@ -1,4 +1,4 @@
-package de.fhwedel.pimpl;
+package de.fhwedel.pimpl.views;
 
 import java.util.Optional;
 
